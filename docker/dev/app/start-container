@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+
+if [[ -z "${WWWUSER}" ]]; then
+  export WWWUSER=1000
+fi
+
+su-exec "${WWWUSER}" python manage.py makemessages -l en -l it -e py
+su-exec "${WWWUSER}" python manage.py compilemessages
+su-exec "${WWWUSER}" python manage.py makemigrations
+su-exec "${WWWUSER}" python manage.py migrate
+su-exec "${WWWUSER}" python manage.py collectstatic --no-input
+
+if [ $# -gt 0 ]; then
+  exec su-exec "${WWWUSER}" "$@"
+else
+  exec /usr/bin/supervisord -c /etc/supervisor.d/supervisord.ini
+fi

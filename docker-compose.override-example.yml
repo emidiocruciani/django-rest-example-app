@@ -1,0 +1,36 @@
+services:
+
+  # DEVELOPMENT override config
+  example-app-django:
+    build:
+      context: .
+      target: development
+    image: example-app/django-dev
+    env_file:
+      - ./docker/dev/app/.env
+    environment:
+      - SECRET_KEY=
+      - DB_PASSWORD=
+    volumes:
+      - ./docker/dev/app/.env:/app
+
+#  # PRODUCTION override config
+#  example-app-django:
+#    build:
+#      context: .
+#      target: production
+#    image: example-app/django-prod
+#    env_file:
+#      - ./docker/prod/app/.env
+#    environment:
+#      - SECRET_KEY=
+#      - DB_PASSWORD=
+
+  example-app-nginx:
+    volumes:
+      - ./source:/app
+
+  example-app-pgsql-db:
+    environment:
+      - PGPASSWORD=
+      - POSTGRES_PASSWORD=
